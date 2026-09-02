@@ -104,11 +104,14 @@ def run_custom(replay: bool = True):
     results = []
     for case in cases:
         print(f"Processing {case['id']}...")
-        notes = case.get("notes", [{
-            "t": "2026-01-01T00:00",
-            "author": "clinician",
-            "text": case["note"]
-        }])
+        if "notes" in case:
+            notes = case["notes"]
+        else:
+            notes = [{
+                "t": "2026-01-01T00:00",
+                "author": "clinician",
+                "text": case.get("note", "")
+            }]
         result = run_pipeline(
             episode_id=case["id"],
             patient=case.get("patient", "custom"),
@@ -118,8 +121,13 @@ def run_custom(replay: bool = True):
         )
         result.expected = case.get("expected")
         results.append(result)
-        expected = result.expected or "none"
-        match = "match" if expected in result.final_codes else "mismatch" if expected != "none" else "N/A"
+        expected = result.expected
+        if isinstance(expected, list):
+            match = "match" if any(e in result.final_codes for e in expected) else "mismatch"
+        elif expected == "no confident match":
+            match = "match" if not result.final_codes else "mismatch"
+        else:
+            match = "match" if expected in result.final_codes else "mismatch"
         print(f"  -> {result.final_codes} ({result.confidence}) expected={expected} [{match}] calls={result.calls_used}")
     
     return results
@@ -154,11 +162,17 @@ def write_eval_cases_md(episode_results, eval_results, custom_results):
     lines.append("")
     for r in custom_results:
         lines.append(format_result_for_md(r))
-        if r.expected:
-            match = "match" if r.expected in r.final_codes else "mismatch"
-            lines.append(f"Label agreement: {match} — ", end="")
+        if r.expected is not None:
+            expected = r.expected
+            if isinstance(expected, list):
+                match = "match" if any(e in r.final_codes for e in expected) else "mismatch"
+            elif expected == "no confident match":
+                match = "match" if not r.final_codes else "mismatch"
+            else:
+                match = "match" if expected in r.final_codes else "mismatch"
+            lines.append("Label agreement: " + match + " — ")
             if match == "mismatch":
-                lines.append(f"System: {r.final_codes}, Expected: {r.expected}. Requires manual review.")
+                lines.append("System: " + str(r.final_codes) + ", Expected: " + str(r.expected) + ". Requires manual review.")
             else:
                 lines.append("Agrees with expected.")
         lines.append("")
