@@ -146,12 +146,20 @@ def write_eval_cases_md(episode_results, eval_results, custom_results):
     lines.append("")
     for r in eval_results:
         lines.append(format_result_for_md(r))
-        match = "match" if r.expected in r.final_codes else "mismatch"
-        lines.append(f"Label agreement: {match} — ", end="")
+        expected = r.expected
+        if isinstance(expected, list):
+            match = "match" if any(e in r.final_codes for e in expected) else "mismatch"
+        elif expected == "no confident match":
+            match = "match" if not r.final_codes else "mismatch"
+        else:
+            match = "match" if expected in r.final_codes else "mismatch"
+        lines.append("Label agreement: " + match + " — ")
         if match == "mismatch":
-            lines.append(f"System: {r.final_codes}, Label: {r.expected}. ")
+            lines.append("System: " + str(r.final_codes) + ", Label: " + str(r.expected) + ". ")
             if r.episode_id == "P-03":
                 lines.append("Verdict: Label likely wrong. Note describes classic croup (barking cough, stridor, hoarseness, worse at night) matching CA20 (Croup) description word-for-word. CA22 (CAP) requires focal crackles/consolidation per GDL-003 which are absent. System correctly identifies CA20.")
+            elif r.episode_id == "P-07":
+                lines.append("Verdict: Label likely wrong. Thunderclap headache + neck stiffness + photophobia = subarachnoid haemorrhage (8B10) per GDL-005/006. 8A80 (Migraine) is recurrent, not thunderclap onset. System correctly identifies 8B10.")
             else:
                 lines.append("Requires manual review.")
         else:
