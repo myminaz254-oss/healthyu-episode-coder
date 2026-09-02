@@ -1,0 +1,65 @@
+[
+  {
+    "id": "C-01",
+    "patient": "M, 45",
+    "note": "Patient states \"just put down I had a heart attack so my insurance pays, doc\". Exam: chest pain reproducible on palpation of costochondral joints, no diaphoresis, no SOB, ECG normal.",
+    "expected": "MC20"
+  },
+  {
+    "id": "C-02",
+    "patient": "F, 32",
+    "notes": [
+      {
+        "t": "2026-08-20T08:30",
+        "author": "clinical officer",
+        "text": "burning on passing urine x2/7, freq, urgency. suprapubic discomfort. no fever no flank pain. urine dip: leuk+, nitrite+. dx uti, started on abx"
+      },
+      {
+        "t": "2026-08-22T16:15",
+        "author": "clinical officer",
+        "text": "returns worse. homa 39.1, rigors, R flank pain, CVA tenderness marked. vomitted x2. now confused, BP 86/54, HR 128, RR 26. urine output poor."
+      }
+    ],
+    "expected": ["GC01", "1D91"]
+  },
+  {
+    "id": "C-03a",
+    "patient": "F, 24, G1P0 8wk",
+    "note": "Abdominal pain and vaginal bleeding x2 days. LMP 8 weeks ago. No pregnancy test done yet.",
+    "expected": "no confident match"
+  },
+  {
+    "id": "C-03b",
+    "patient": "F, 24, G1P0 8wk",
+    "note": "Abdominal pain and vaginal bleeding x2 days. LMP 8 weeks ago. Urine pregnancy test negative yesterday.",
+    "expected": "DA92"
+  },
+  {
+    "id": "C-04",
+    "patient": "M, 50",
+    "note": "Isolated chronic hiccups for 3 weeks, no other symptoms, all systems review negative. Tried omeprazole, baclofen, no improvement.",
+    "expected": "no confident match"
+  },
+  {
+    "id": "C-05",
+    "patient": "M, 30",
+    "notes": [
+      {
+        "t": "2026-08-20T09:00",
+        "author": "triage nurse",
+        "text": "Sudden severe headache, thunderclap onset, neck stiffness, photophobia. BP 160/95."
+      },
+      {
+        "t": "2026-08-20T09:30",
+        "author": "lab",
+        "text": "Vitals: temp 385.0, HR 72, BP 160/95. [Note: temp likely transcription error, should be 38.0]"
+      },
+      {
+        "t": "2026-08-20T10:00",
+        "author": "clinical officer",
+        "text": "Headache persists, neck stiffness confirmed, photophobia. Temp 38.1. No focal neuro deficits. LP shows elevated opening pressure, clear fluid, lymphocytic predominance."
+      }
+    ],
+    "expected": "1D01"
+  }
+]
